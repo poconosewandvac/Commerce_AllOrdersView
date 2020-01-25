@@ -15,6 +15,8 @@ use modmore\Commerce\Admin\Orders\Grid as OrderGrid;
 class Grid extends OrderGrid
 {
     public $key = 'order-all-table';
+    // Since orders may have never been received, default to created_on
+    public $defaultSort = 'created_on';
 
     /**
      * Override to remove check for state of an order
@@ -74,9 +76,6 @@ class Grid extends OrderGrid
         $sortby = array_key_exists('sortby', $options) && !empty($options['sortby']) ? $this->adapter->escape($options['sortby']) : $this->defaultSort;
         $sortdir = array_key_exists('sortdir', $options) && strtoupper($options['sortdir']) === 'ASC' ? 'ASC' : 'DESC';
         $c->sortby($sortby, $sortdir);
-        if ($sortby === 'received_on') {
-            $c->sortby('created_on', $sortdir);
-        }
 
         $count = $this->adapter->getCount('comOrder', $c);
         $this->setTotalCount($count);
